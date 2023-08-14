@@ -100,20 +100,6 @@ public class WalksyCrystalOptimizerMod implements ClientModInitializer {
 
     }
 
-    private static Entity removeSaidEntity() {
-        Entity entity = null;
-        if (mc.crosshairTarget instanceof EntityHitResult hit) {
-            if (hit.getEntity() instanceof EndCrystalEntity crystalEntity) {
-                entity = crystalEntity;
-            } else if (hit.getEntity() instanceof SlimeEntity slimeEntity) {
-                entity = slimeEntity;
-            } else if (hit.getEntity() instanceof MagmaCubeEntity magmaCubeEntity) {
-                entity = magmaCubeEntity;
-            }
-        }
-        return entity;
-    }
-
     private static boolean lookingAtSaidEntity() {
         return
                 mc.crosshairTarget instanceof EntityHitResult entity && (entity.getEntity() instanceof EndCrystalEntity
