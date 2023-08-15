@@ -52,17 +52,19 @@ public class WalksyCrystalOptimizerMod implements ClientModInitializer {
     public static int alreadyPlaced;
 
     public static void useOwnTicks() {
-        System.out.println(mc.player.getUuid());
-
-        /**
-         * no random ass kids gonna use this shit
-         */
         UUID player = mc.player.getUuid();
 
         UUID rye = UUID.fromString("49d706c1-c716-4e86-a1ea-6b7be2ff2b4f");
         UUID aqua = UUID.fromString("b84ee574-7540-4fc2-88d1-9883f5441c95");
         UUID fire = UUID.fromString("3666ab2a-0eec-46db-965d-2cdc2ccaac5f");
         UUID sheep = UUID.fromString("77de8c1f-e0dc-499d-9987-379ad9f2c8fc");
+        
+        //System.out.println(mc.player.getUuid());
+
+        /**
+         * no random ass kids gonna use this shit
+         */
+
 
         //if (player != rye && player != aqua && player != fire && player != sheep) {
         //    System.out.println("Closing, stop using my optimizer kid!");
@@ -75,7 +77,7 @@ public class WalksyCrystalOptimizerMod implements ClientModInitializer {
         //if (mc.player.getUuid() != rye) {
         //mc.close();
         //}
-
+        
         ItemStack mainHandStack = mc.player.getMainHandStack();
 
         if (mc.options.attackKey.isPressed()) {
