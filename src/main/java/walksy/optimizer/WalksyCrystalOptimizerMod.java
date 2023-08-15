@@ -58,7 +58,7 @@ public class WalksyCrystalOptimizerMod implements ClientModInitializer {
         UUID aqua = UUID.fromString("b84ee574-7540-4fc2-88d1-9883f5441c95");
         UUID fire = UUID.fromString("3666ab2a-0eec-46db-965d-2cdc2ccaac5f");
         UUID sheep = UUID.fromString("77de8c1f-e0dc-499d-9987-379ad9f2c8fc");
-        
+
         //System.out.println(mc.player.getUuid());
 
         /**
@@ -77,7 +77,7 @@ public class WalksyCrystalOptimizerMod implements ClientModInitializer {
         //if (mc.player.getUuid() != rye) {
         //mc.close();
         //}
-        
+
         ItemStack mainHandStack = mc.player.getMainHandStack();
 
         if (mc.options.attackKey.isPressed()) {
@@ -183,8 +183,8 @@ public class WalksyCrystalOptimizerMod implements ClientModInitializer {
     }
 
     public static int limitPackets() {
-        int stop = 2;
-        if (getPing() > 50) stop = 2;
+        int stop = 1;
+        if (getPing() > 50) stop = 1;
         if (getPing() < 50) stop = 1;
         return stop;
     }
