@@ -4,4 +4,4 @@
 
 /oxrisegod to toggle
 
-credit to @Walksy
+credit to [Walksy](https://github.com/Walksy/WalksyCrystalOptimizer) for the actual optimizer part
