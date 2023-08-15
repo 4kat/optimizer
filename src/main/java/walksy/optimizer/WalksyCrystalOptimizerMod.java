@@ -47,6 +47,8 @@ public class WalksyCrystalOptimizerMod implements ClientModInitializer {
 
     public static int hitCount;
     public static int breakingBlockTick;
+    public static int alreadyPlaced;
+
     public static void useOwnTicks() {
         ItemStack mainHandStack = mc.player.getMainHandStack();
 
@@ -76,10 +78,15 @@ public class WalksyCrystalOptimizerMod implements ClientModInitializer {
                 && (isLookingAt(Blocks.OBSIDIAN, generalLookPos().getBlockPos())
                 || isLookingAt(Blocks.BEDROCK, generalLookPos().getBlockPos())))
         {
+            if (alreadyPlaced <1) {
             sendInteractBlockPacket(generalLookPos().getBlockPos(), generalLookPos().getSide());
+            alreadyPlaced++;
+
             if (canPlaceCrystalServer(generalLookPos().getBlockPos())) {
-                mc.player.swingHand(mc.player.getActiveHand());
-            }
+                    mc.player.swingHand(mc.player.getActiveHand());
+            }}
+        } else {
+            alreadyPlaced = 0;
         }
     }
 
@@ -99,6 +106,7 @@ public class WalksyCrystalOptimizerMod implements ClientModInitializer {
         return mc.world.raycast(new RaycastContext(camPos, camPos.add(clientLookVec.multiply(4.5)), RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.NONE, mc.player));
 
     }
+
 
     private static boolean lookingAtSaidEntity() {
         return
