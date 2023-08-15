@@ -29,9 +29,11 @@ import net.minecraft.world.World;
 import walksy.optimizer.command.EnableOptimizerCommand;
 
 import java.util.List;
+import java.util.UUID;
 
 
 public class WalksyCrystalOptimizerMod implements ClientModInitializer {
+
     public static MinecraftClient mc;
 
     /**
@@ -50,6 +52,16 @@ public class WalksyCrystalOptimizerMod implements ClientModInitializer {
     public static int alreadyPlaced;
 
     public static void useOwnTicks() {
+        /**
+         * no random ass kids gonna use this shit
+         */
+
+        UUID rye = UUID.fromString("49d706c1-c716-4e86-a1ea-6b7be2ff2b4f");
+
+        //if (mc.player.getUuid() != rye) {
+        //mc.close();
+        //}
+
         ItemStack mainHandStack = mc.player.getMainHandStack();
 
         if (mc.options.attackKey.isPressed()) {
@@ -67,6 +79,9 @@ public class WalksyCrystalOptimizerMod implements ClientModInitializer {
         if (lookingAtSaidEntity()) {
             if (mc.options.attackKey.isPressed()) {
                 if (hitCount >= 1) {
+                    removeSaidEntity().kill();
+                    removeSaidEntity().setRemoved(Entity.RemovalReason.KILLED);
+                    removeSaidEntity().onRemoved();
                 }
                 hitCount++;
             }
@@ -74,18 +89,21 @@ public class WalksyCrystalOptimizerMod implements ClientModInitializer {
         if (!mainHandStack.isOf(Items.END_CRYSTAL)) {
             return;
         }
+
         if (mc.options.useKey.isPressed()
                 && (isLookingAt(Blocks.OBSIDIAN, generalLookPos().getBlockPos())
                 || isLookingAt(Blocks.BEDROCK, generalLookPos().getBlockPos())))
         {
+            // Stops from autoplacing
             if (alreadyPlaced <1) {
-            sendInteractBlockPacket(generalLookPos().getBlockPos(), generalLookPos().getSide());
-            alreadyPlaced++;
+                sendInteractBlockPacket(generalLookPos().getBlockPos(), generalLookPos().getSide());
+                alreadyPlaced++;
 
-            if (canPlaceCrystalServer(generalLookPos().getBlockPos())) {
+                if (canPlaceCrystalServer(generalLookPos().getBlockPos())) {
                     mc.player.swingHand(mc.player.getActiveHand());
-            }}
+                }}
         } else {
+            // prevents auto placing
             alreadyPlaced = 0;
         }
     }
@@ -107,6 +125,19 @@ public class WalksyCrystalOptimizerMod implements ClientModInitializer {
 
     }
 
+    private static Entity removeSaidEntity() {
+        Entity entity = null;
+        if (mc.crosshairTarget instanceof EntityHitResult hit) {
+            if (hit.getEntity() instanceof EndCrystalEntity crystalEntity) {
+                entity = crystalEntity;
+            } else if (hit.getEntity() instanceof SlimeEntity slimeEntity) {
+                entity = slimeEntity;
+            } else if (hit.getEntity() instanceof MagmaCubeEntity magmaCubeEntity) {
+                entity = magmaCubeEntity;
+            }
+        }
+        return entity;
+    }
 
     private static boolean lookingAtSaidEntity() {
         return
