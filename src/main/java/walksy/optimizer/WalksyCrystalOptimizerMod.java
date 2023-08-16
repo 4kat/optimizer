@@ -6,6 +6,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.hud.ChatHud;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.decoration.EndCrystalEntity;
@@ -19,6 +20,7 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.listener.ServerPlayPacketListener;
 import net.minecraft.network.packet.c2s.play.PlayerInteractBlockC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerInteractEntityC2SPacket;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -30,7 +32,6 @@ import walksy.optimizer.command.EnableOptimizerCommand;
 
 import java.util.List;
 import java.util.UUID;
-
 
 public class WalksyCrystalOptimizerMod implements ClientModInitializer {
 
@@ -47,17 +48,19 @@ public class WalksyCrystalOptimizerMod implements ClientModInitializer {
         command.initializeToggleCommands();
     }
 
+    /**
+     * Minecraft automatically places crystals if you are holding down right click,
+     * but not as fast as unmodified Walksy does by defualt. I have made it so the
+     * optimizer portion of the mod does not work if you are just holding down right click.
+     */
     public static int hitCount;
+
+    public static int placeCount;
     public static int breakingBlockTick;
     public static int alreadyPlaced;
 
     public static void useOwnTicks() {
-        UUID player = mc.player.getUuid();
 
-        UUID rye = UUID.fromString("49d706c1-c716-4e86-a1ea-6b7be2ff2b4f");
-        UUID aqua = UUID.fromString("b84ee574-7540-4fc2-88d1-9883f5441c95");
-        UUID fire = UUID.fromString("3666ab2a-0eec-46db-965d-2cdc2ccaac5f");
-        UUID sheep = UUID.fromString("77de8c1f-e0dc-499d-9987-379ad9f2c8fc");
 
         //System.out.println(mc.player.getUuid());
 
@@ -89,9 +92,12 @@ public class WalksyCrystalOptimizerMod implements ClientModInitializer {
 
         if (!mc.options.useKey.isPressed()) {
             hitCount = 0;
+            placeCount = 0;
         }
-        if (hitCount == limitPackets())
+
+        if (hitCount == 1)
             return;
+
         if (lookingAtSaidEntity()) {
             if (mc.options.attackKey.isPressed()) {
                 if (hitCount >= 1) {
@@ -110,23 +116,30 @@ public class WalksyCrystalOptimizerMod implements ClientModInitializer {
                 && (isLookingAt(Blocks.OBSIDIAN, generalLookPos().getBlockPos())
                 || isLookingAt(Blocks.BEDROCK, generalLookPos().getBlockPos()))) {
             // Stops from autoplacing
-            if (alreadyPlaced < 1) {
+            if (placeCount >= 1) {
                 sendInteractBlockPacket(generalLookPos().getBlockPos(), generalLookPos().getSide());
-                alreadyPlaced++;
+
 
                 if (canPlaceCrystalServer(generalLookPos().getBlockPos())) {
                     mc.player.swingHand(mc.player.getActiveHand());
                 }
             }
-        } else {
-            // prevents auto placing
-            alreadyPlaced = 0;
+            placeCount++;
+        }
+
+        if (mc.options.useKey.isPressed()) {
+            //ChatHud chat = mc.inGameHud.getChatHud();
+
+            //chat.addMessage(Text.of("PLACING"));
         }
     }
+
+
 
     private static BlockState getBlockState(BlockPos pos) {
         return mc.world.getBlockState(pos);
     }
+
     private static boolean isLookingAt(Block block, BlockPos pos) {
         return getBlockState(pos).getBlock() == block;
     }
@@ -180,13 +193,6 @@ public class WalksyCrystalOptimizerMod implements ClientModInitializer {
         BlockPos pos = new BlockPos(vec3i);
         BlockHitResult result = new BlockHitResult(vec3d, dir,pos,false);
         return mc.interactionManager.interactBlock(mc.player,mc.player.getActiveHand(),result);
-    }
-
-    public static int limitPackets() {
-        int stop = 1;
-        if (getPing() > 50) stop = 1;
-        if (getPing() < 50) stop = 1;
-        return stop;
     }
 
     private static int getPing() {
