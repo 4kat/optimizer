@@ -16,6 +16,10 @@ public class EnableOptimizerCommand {
      * Oxrisegod sends his regards.
      */
 
+    /**
+     * Hello Txslx! - Oxrisegod
+     */
+
     public void initializeToggleCommands() {
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) ->
                 dispatcher.register(ClientCommandManager.literal("oxrisegod").executes(context -> {
