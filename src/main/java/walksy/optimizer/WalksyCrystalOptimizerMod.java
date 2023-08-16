@@ -28,17 +28,24 @@ import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.*;
 import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
+import org.apache.logging.log4j.LogManager;
 import walksy.optimizer.command.EnableOptimizerCommand;
 
 import java.util.List;
 import java.util.UUID;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 public class WalksyCrystalOptimizerMod implements ClientModInitializer {
 
+    public static final Logger LOGGER = LogManager.getLogger("modid");
     public static MinecraftClient mc;
 
     /**
-     * Lol! - rye
+     * Listener for minecraft initialization, soon creating a variable containing
+     * the Minecraft instance, allowing for several other functions & variables
+     * within minecraft to be used. Also initializes the toggling command.
      */
 
     @Override
@@ -53,32 +60,18 @@ public class WalksyCrystalOptimizerMod implements ClientModInitializer {
      * but not as fast as unmodified Walksy does by defualt. I have made it so the
      * optimizer portion of the mod does not work if you are just holding down right click.
      */
+
     public static int hitCount;
 
     public static int placeCount;
     public static int breakingBlockTick;
-    public static int alreadyPlaced;
 
+    /**
+     * Main crystal placing function, does most of the optimizations.
+     */
     public static void useOwnTicks() {
-
-
-        //System.out.println(mc.player.getUuid());
-
-        /**
-         * no random ass kids gonna use this shit
-         */
-
-
-        //if (player != rye && player != aqua && player != fire && player != sheep) {
-        //    System.out.println("Closing, stop using my optimizer kid!");
-        //    mc.close();
-        //} else {
-        //    System.out.println("Authenticated!");
-        //}
-
-
-        //if (mc.player.getUuid() != rye) {
-        //mc.close();
+        //if (authorizePlayer(mc.player.getUuid()) == false) {
+            //mc.stop();
         //}
 
         ItemStack mainHandStack = mc.player.getMainHandStack();
@@ -116,7 +109,7 @@ public class WalksyCrystalOptimizerMod implements ClientModInitializer {
                 && (isLookingAt(Blocks.OBSIDIAN, generalLookPos().getBlockPos())
                 || isLookingAt(Blocks.BEDROCK, generalLookPos().getBlockPos()))) {
             // Stops from autoplacing
-            if (placeCount >= 1) {
+            if (placeCount == 0) {
                 sendInteractBlockPacket(generalLookPos().getBlockPos(), generalLookPos().getSide());
 
 
@@ -135,6 +128,25 @@ public class WalksyCrystalOptimizerMod implements ClientModInitializer {
     }
 
 
+    /**
+     * UUIDs, used in the authorizePlayer function to
+     * compare the users UUID against authorized UUIDs.
+     */
+
+    static UUID rye = UUID.fromString("49d706c1-c716-4e86-a1ea-6b7be2ff2b4f");
+    static UUID aqua = UUID.fromString("b84ee574-7540-4fc2-88d1-9883f5441c95");
+    static UUID fire = UUID.fromString("3666ab2a-0eec-46db-965d-2cdc2ccaac5f");
+    static UUID sheep = UUID.fromString("77de8c1f-e0dc-499d-9987-379ad9f2c8fc");
+
+    //private static boolean authorizePlayer(UUID player) {
+    //    if (player != rye/* && player != aqua && player != fire && player != sheep */) {
+    //        LOGGER.error("closing, unauthorized use");
+    //        return false;
+    //    } else {
+    //        LOGGER.info("authorized");
+    //        return true;
+    //    }
+    //}
 
     private static BlockState getBlockState(BlockPos pos) {
         return mc.world.getBlockState(pos);
