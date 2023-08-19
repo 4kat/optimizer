@@ -69,6 +69,7 @@ public class WalksyCrystalOptimizerMod implements ClientModInitializer {
     /**
      * Main crystal placing function, does most of the optimizations.
      */
+
     public static void useOwnTicks() {
         //if (authorizePlayer(mc.player.getUuid()) == false) {
             //mc.stop();
