@@ -10,7 +10,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import walksy.optimizer.WalksyCrystalOptimizerMod;
 import walksy.optimizer.command.EnableOptimizerCommand;
 
-import static walksy.optimizer.WalksyCrystalOptimizerMod.limitPackets;
 import static walksy.optimizer.WalksyCrystalOptimizerMod.mc;
 
 @Mixin(MinecraftClient.class)
@@ -21,7 +20,7 @@ public abstract class MinecraftClientMixin {
             ItemStack mainHand = mc.player.getMainHandStack();
             if (mainHand.isOf(Items.END_CRYSTAL))
                 //ensures only are packets are being sent through
-                if (WalksyCrystalOptimizerMod.hitCount != limitPackets())
+                if (WalksyCrystalOptimizerMod.hitCount != 1)
                     ci.cancel();
         }
     }
